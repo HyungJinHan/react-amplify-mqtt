@@ -14,8 +14,8 @@ function App() {
   const pubsub = new PubSub({
     region: "ap-northeast-2",
     endpoint:
-      // "mqtts://a3jmtb9lvgjr1c-ats.iot.ap-northeast-2.amazonaws.com:8883",
-      "wss://a3jmtb9lvgjr1c-ats.iot.ap-northeast-2.amazonaws.com/mqtt",
+      "mqtts://a3jmtb9lvgjr1c-ats.iot.ap-northeast-2.amazonaws.com:8883",
+    // "wss://a3jmtb9lvgjr1c-ats.iot.ap-northeast-2.amazonaws.com/mqtt",
   });
 
   console.log(pubsub);
@@ -46,9 +46,11 @@ function App() {
               Welcome <code>{user.username}</code>
             </p>
 
-            <p>
-              email : <code>{user.signInDetails.loginId}</code>
-            </p>
+            {user.signInDetails.loginId ? (
+              <p>
+                email : <code>{user.signInDetails.loginId}</code>
+              </p>
+            ) : null}
 
             <p>
               Connecting State : <code>{pubsub.connectionState}</code>
