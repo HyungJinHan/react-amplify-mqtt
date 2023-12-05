@@ -1,30 +1,24 @@
-import "@aws-amplify/ui-react/styles.css";
 import "./App.css";
+import logo from "./logo.svg";
 
 function App() {
-  // const pubsub = new PubSub({
-  //   region: "ap-northeast-2",
-  //   endpoint: "mqtts://a3jmtb9lvgjr1c-ats.iot.ap-northeast-2.amazonaws.com",
-  // });
-
-  // Amplify.configure({
-  //   Auth: {
-  //     region: "us-east-1",
-  //     userPoolId: "us-east-1_XvwB4sIGO",
-  //     userPoolWebClientId: "react-mqtt-test-hhj",
-  //   },
-  // });
-
   return (
-    // <Authenticator>
-    //   {({ signOut, user }) => (
-    //     <div>
-    //       <p>Welcome {user.username}</p>
-    //       <button onClick={signOut}>Sign out</button>
-    //     </div>
-    //   )}
-    // </Authenticator>
-    <p>Hello World</p>
+    <div className="App">
+      <header className="App-header">
+        <img src={logo} className="App-logo" alt="logo" />
+        <p>
+          Edit <code>src/App.js</code> and save to reload.
+        </p>
+        <a
+          className="App-link"
+          href="https://reactjs.org"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Learn React
+        </a>
+      </header>
+    </div>
   );
 }
 
