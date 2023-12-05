@@ -42,6 +42,7 @@ function App() {
       <Authenticator>
         {({ signOut, user }) => (
           <div className="App-header">
+            {/* test */}
             <p>
               Welcome <code>{user.username}</code>
             </p>
