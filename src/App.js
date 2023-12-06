@@ -4,9 +4,9 @@ import "@aws-amplify/ui-react/styles.css";
 import { Amplify } from "aws-amplify";
 import { fetchAuthSession } from "aws-amplify/auth";
 import { useEffect, useState } from "react";
+import { JSONTree } from "react-json-tree";
 import "./App.css";
 import awsconfig from "./aws-exports";
-
 import AWSIotConfiguration from "./config/aws-iot-config";
 
 Amplify.configure(awsconfig);
@@ -23,18 +23,22 @@ function App() {
   });
 
   useEffect(() => {
-    pubsub.subscribe({ topics: "odn/+/sensors" }).subscribe({
-      next: (data) => {
-        setDataArray((prevState) => [...prevState, data]);
-      },
-      complete: () =>
-        setEtc({
-          subscribeMsg: 'Subscribed to "odn/+/sensors"',
-        }),
-      error: (error) => {
-        console.log(error);
-      },
-    });
+    pubsub
+      .subscribe({
+        topics: ["odn/+/sensors/#", "odn/+/photovoltaics/#"],
+      })
+      .subscribe({
+        next: (data) => {
+          setDataArray((prevState) => [...prevState, data]);
+        },
+        complete: () =>
+          setEtc({
+            subscribeMsg: "Subscribed",
+          }),
+        error: (error) => {
+          console.log(error);
+        },
+      });
   }, []);
 
   useEffect(() => {
@@ -56,26 +60,24 @@ function App() {
       });
   }, []);
 
-  const uniqueArray = [
-    ...new Map(dataArray.map((data) => [data.measure_time, data])).values(),
-  ];
+  // const uniqueArray = [
+  //   ...new Map(dataArray.map((data) => [data.measure_time, data])).values(),
+  // ];
 
-  console.log(uniqueArray);
+  // console.log(uniqueArray);
 
   return (
     <div className="App">
       <Authenticator>
         {({ signOut, user }) => (
           <div className="App-header">
-            {/* {policyAttach()} */}
-
             <p>
-              UserID : <code>{user.username}</code>
+              User ID : <code>{user.username}</code>
             </p>
 
             {user.signInDetails ? (
               <p>
-                email : <code>{user.signInDetails.loginId}</code>
+                E-mail : <code>{user.signInDetails.loginId}</code>
               </p>
             ) : (
               ""
@@ -93,21 +95,16 @@ function App() {
               Logout
             </button>
 
-            {uniqueArray.length === 0 ? null : (
-              <>
-                <p>MQTT Message</p>
-
-                {uniqueArray.map((data, index) => (
-                  <div key={index}>
-                    <code style={{ fontSize: "15px" }}>
-                      {data.device_id} | {data.serial_number} |{" "}
-                      {data.measure_time}
-                    </code>
-                    <br />
-                    <br />
-                  </div>
-                ))}
-              </>
+            {dataArray.length === 0 ? null : (
+              <div style={{ textAlign: "left", width: "80%" }}>
+                <JSONTree
+                  hideRoot
+                  data={dataArray}
+                  labelRenderer={([key]) => <strong>{key}</strong>}
+                  valueRenderer={(raw) => <em>{raw}</em>}
+                  theme={"monokai"}
+                />
+              </div>
             )}
           </div>
         )}
