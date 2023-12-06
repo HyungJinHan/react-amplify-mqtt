@@ -7,28 +7,9 @@ import { useEffect, useState } from "react";
 import "./App.css";
 import awsconfig from "./aws-exports";
 
+import AWSIotConfiguration from "./config/aws-iot-config";
+
 Amplify.configure(awsconfig);
-
-// const GetCognitoId = () => {
-//   const [cognitoId, setCognitoId] = useState("");
-
-//   fetchAuthSession()
-//     .then((info) => {
-//       const cognitoIdentityId = info.identityId;
-//       setCognitoId(cognitoIdentityId);
-//     })
-//     .catch((err) => console.log(err));
-
-//   return (
-//     <p>
-//       aws-cli bash :{" "}
-//       <code style={{ fontSize: "15px" }}>
-//         aws iot attach-policy --policy-name 'clientMqttConnect' --target '
-//         {cognitoId}'
-//       </code>
-//     </p>
-//   );
-// };
 
 function App() {
   const [dataArray, setDataArray] = useState([]);
@@ -36,32 +17,14 @@ function App() {
     subscribeMsg: "Disconnected",
   });
 
-  const getCognitoId = () => {
-    fetchAuthSession()
-      .then((info) => {
-        const cognitoIdentityId = info.identityId;
-        console.log();
-        console.log(
-          "Install aws-cli first and use script\n\n" +
-            `aws iot attach-policy --policy-name 'clientMqttConnect' --target '${cognitoIdentityId}'`
-        );
-      })
-      .catch((err) => {
-        if (err) {
-          console.log("Logout");
-        }
-      });
-  };
-
   const pubsub = new PubSub({
-    region: "ap-northeast-2",
-    endpoint: "wss://a3jmtb9lvgjr1c-ats.iot.ap-northeast-2.amazonaws.com/mqtt",
+    region: AWSIotConfiguration.region,
+    endpoint: AWSIotConfiguration.endpoint,
   });
 
   useEffect(() => {
     pubsub.subscribe({ topics: "odn/+/sensors" }).subscribe({
       next: (data) => {
-        console.log(data);
         setDataArray((prevState) => [...prevState, data]);
       },
       complete: () =>
@@ -72,6 +35,25 @@ function App() {
         console.log(error);
       },
     });
+  }, []);
+
+  useEffect(() => {
+    fetchAuthSession()
+      .then((info) => {
+        const cognitoIdentityId = info.identityId;
+        // attachPolicy(cognitoIdentityId);
+
+        console.log(
+          "Install aws-cli first and use script\n\n" +
+            `aws iot attach-policy --policy-name 'clientMqttConnect' --target '${cognitoIdentityId}'`
+        );
+      })
+      .catch((err) => {
+        if (err) {
+          console.log(err);
+          console.log("Logout");
+        }
+      });
   }, []);
 
   const uniqueArray = [
@@ -85,7 +67,7 @@ function App() {
       <Authenticator>
         {({ signOut, user }) => (
           <div className="App-header">
-            {getCognitoId()}
+            {/* {policyAttach()} */}
 
             <p>
               UserID : <code>{user.username}</code>
