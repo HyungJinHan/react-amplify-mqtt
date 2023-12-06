@@ -9,28 +9,29 @@ import awsconfig from "./aws-exports";
 Amplify.configure(awsconfig);
 
 function App() {
-  const [message, setMessage] = useState("");
+  const [dataArray, setDataArray] = useState([]);
+  const [message, setMessage] = useState({
+    subscribeMsg: "Disconnected",
+  });
 
   const pubsub = new PubSub({
     region: "ap-northeast-2",
-    endpoint:
-      "mqtts://a3jmtb9lvgjr1c-ats.iot.ap-northeast-2.amazonaws.com:8883",
-    // "wss://a3jmtb9lvgjr1c-ats.iot.ap-northeast-2.amazonaws.com/mqtt",
+    endpoint: "wss://a3jmtb9lvgjr1c-ats.iot.ap-northeast-2.amazonaws.com/mqtt",
   });
-
-  console.log(pubsub);
-
-  // fetchAuthSession().then((info) => {
-  //   const cognitoIdentityId = info.identityId;
-  //   console.log(cognitoIdentityId);
-  // });
 
   useEffect(() => {
     pubsub.subscribe({ topics: "odn/+/sensors" }).subscribe({
       next: (data) => {
-        console.log(data);
-        setMessage(data.msg);
+        console.log(data, typeof data);
+        setDataArray((prevState) => ({
+          ...prevState,
+          data,
+        }));
       },
+      complete: () =>
+        setMessage({
+          subscribeMsg: 'Subscribed to "odn/+/sensors"',
+        }),
       error: (error) => {
         console.log(error);
       },
@@ -45,21 +46,37 @@ function App() {
             <p>
               Welcome <code>{user.username}</code>
             </p>
-
-            {user.signInDetails.loginId ? (
+            {user.signInDetails ? (
               <p>
                 email : <code>{user.signInDetails.loginId}</code>
               </p>
-            ) : null}
+            ) : (
+              ""
+            )}
 
             <p>
               Connecting State : <code>{pubsub.connectionState}</code>
-              {console.log(pubsub.connectionState)}
             </p>
 
             <p>
-              MQTT Message : <code>{message}</code>
+              Subscribe State : <code>{message.subscribeMsg}</code>
             </p>
+
+            {!dataArray === "" ? (
+              <>
+                <p>MQTT Message</p>
+                <div>
+                  {dataArray.map((data) => (
+                    <code>
+                      {data.device_id} | {data.serial_number} |{" "}
+                      {data.measure_time}
+                    </code>
+                  ))}
+                </div>
+              </>
+            ) : null}
+
+            <br />
 
             <button style={{ cursor: "pointer" }} onClick={signOut}>
               Sign out
