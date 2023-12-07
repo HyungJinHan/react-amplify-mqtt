@@ -4,20 +4,20 @@ import "@aws-amplify/ui-react/styles.css";
 import { Amplify } from "aws-amplify";
 import { fetchAuthSession } from "aws-amplify/auth";
 import { useEffect, useState } from "react";
-import { JSONTree } from "react-json-tree";
 import "./App.css";
 import awsconfig from "./aws-exports";
+import JsonView from "./components/JsonView";
 import AWSIotConfiguration from "./config/aws-iot-config";
 
 Amplify.configure(awsconfig);
 
+const pubsub = new PubSub({
+  region: AWSIotConfiguration.region,
+  endpoint: AWSIotConfiguration.endpoint,
+});
+
 function App() {
   const [dataArray, setDataArray] = useState([]);
-
-  const pubsub = new PubSub({
-    region: AWSIotConfiguration.region,
-    endpoint: AWSIotConfiguration.endpoint,
-  });
 
   useEffect(() => {
     pubsub
@@ -34,7 +34,7 @@ function App() {
           console.log(error);
         },
       });
-    // console.log("first");
+
     return console.log("Subscribe Complete");
   }, []);
 
@@ -68,44 +68,17 @@ function App() {
       <Authenticator>
         {({ signOut, user }) => (
           <div className="App-header">
-            <p>
-              user.username : <code>{user.username}</code>
-            </p>
+            <code className="title">MQTT Checker</code>
 
-            {user.signInDetails ? (
-              <p>
-                user.signInDetails.loginId :{" "}
-                <code>{user.signInDetails.loginId}</code>
-              </p>
-            ) : (
-              ""
-            )}
-
-            <p>
-              PubSub.connectionState : <code>{pubsub.connectionState}</code>
-            </p>
-
-            <button style={{ cursor: "pointer" }} onClick={signOut}>
+            <button className="logout" onClick={signOut}>
               Logout
             </button>
 
-            {dataArray.length === 0 ? null : (
-              <div style={{ textAlign: "left", width: "80%" }}>
-                <JSONTree
-                  // hideRoot
-                  data={dataArray}
-                  labelRenderer={([key]) => <strong>{key}</strong>}
-                  valueRenderer={(raw) => <em>{raw}</em>}
-                  theme={{
-                    extend: "google",
-                    valueLabel: {
-                      textDecoration: "underline",
-                    },
-                  }}
-                  keyPath={["ODN MQTT"]}
-                />
-              </div>
-            )}
+            <div className="json-section">
+              <JsonView data={user} keyPath="Authenticator.user Info" />
+              <JsonView data={pubsub} keyPath="PubSub Info" />
+              <JsonView data={dataArray} keyPath="ODN MQTT" />
+            </div>
           </div>
         )}
       </Authenticator>

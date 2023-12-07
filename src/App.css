@@ -12,3 +12,26 @@
   font-size: calc(10px + 1vmin);
   color: white;
 }
+
+.logout {
+  cursor: pointer;
+  border-radius: 50%;
+  border: 0;
+  width: 70px;
+  height: 70px;
+  position: absolute;
+  bottom: 2%;
+  right: 2%;
+}
+
+.json-section {
+  text-align: left;
+  width: 80%;
+  display: flex;
+  flex-direction: column;
+  padding-top: 10px;
+}
+
+.title {
+  font-size: larger;
+}
