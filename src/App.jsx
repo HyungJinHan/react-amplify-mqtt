@@ -63,8 +63,6 @@ function App() {
   //   ...new Map(dataArray.map((data) => [data, data])).values(),
   // ];
 
-  console.log(dataArray);
-
   return (
     <div className="App">
       <Authenticator>

@@ -5,4 +5,4 @@ var AWSIotConfiguration = {
   apiVersion: "2012-10-17",
 };
 
-module.exports = AWSIotConfiguration;
+export default AWSIotConfiguration;

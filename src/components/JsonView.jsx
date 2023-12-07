@@ -30,6 +30,7 @@ export default function JsonView({ data, keyPath }) {
       labelRenderer={([key]) => <strong>{key}</strong>}
       valueRenderer={(raw) => <em>{raw}</em>}
       keyPath={[keyPath]}
+      collectionLimit={20}
       theme={{
         extend: { ...customTheme },
         valueLabel: {
