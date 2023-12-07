@@ -13,9 +13,6 @@ Amplify.configure(awsconfig);
 
 function App() {
   const [dataArray, setDataArray] = useState([]);
-  const [etc, setEtc] = useState({
-    subscribeMsg: "Disconnected",
-  });
 
   const pubsub = new PubSub({
     region: AWSIotConfiguration.region,
@@ -25,20 +22,20 @@ function App() {
   useEffect(() => {
     pubsub
       .subscribe({
-        topics: ["odn/+/sensors/#", "odn/+/photovoltaics/#"],
+        topics: ["odn/+/sensors/#", "odn/+/photovoltaics/#", "odn/+/sensors"],
       })
       .subscribe({
         next: (data) => {
           setDataArray((prevState) => [...prevState, data]);
+          window.scrollTo(0, document.body.scrollHeight);
         },
-        complete: () =>
-          setEtc({
-            subscribeMsg: "Subscribed",
-          }),
+        complete: () => {},
         error: (error) => {
           console.log(error);
         },
       });
+    // console.log("first");
+    return console.log("Subscribe Complete");
   }, []);
 
   useEffect(() => {
@@ -61,10 +58,10 @@ function App() {
   }, []);
 
   // const uniqueArray = [
-  //   ...new Map(dataArray.map((data) => [data.measure_time, data])).values(),
+  //   ...new Map(dataArray.map((data) => [data, data])).values(),
   // ];
 
-  // console.log(uniqueArray);
+  console.log(dataArray);
 
   return (
     <div className="App">
@@ -72,23 +69,20 @@ function App() {
         {({ signOut, user }) => (
           <div className="App-header">
             <p>
-              User ID : <code>{user.username}</code>
+              user.username : <code>{user.username}</code>
             </p>
 
             {user.signInDetails ? (
               <p>
-                E-mail : <code>{user.signInDetails.loginId}</code>
+                user.signInDetails.loginId :{" "}
+                <code>{user.signInDetails.loginId}</code>
               </p>
             ) : (
               ""
             )}
 
             <p>
-              Connecting State : <code>{pubsub.connectionState}</code>
-            </p>
-
-            <p>
-              Subscribe State : <code>{etc.subscribeMsg}</code>
+              PubSub.connectionState : <code>{pubsub.connectionState}</code>
             </p>
 
             <button style={{ cursor: "pointer" }} onClick={signOut}>
@@ -98,11 +92,17 @@ function App() {
             {dataArray.length === 0 ? null : (
               <div style={{ textAlign: "left", width: "80%" }}>
                 <JSONTree
-                  hideRoot
+                  // hideRoot
                   data={dataArray}
                   labelRenderer={([key]) => <strong>{key}</strong>}
                   valueRenderer={(raw) => <em>{raw}</em>}
-                  theme={"monokai"}
+                  theme={{
+                    extend: "google",
+                    valueLabel: {
+                      textDecoration: "underline",
+                    },
+                  }}
+                  keyPath={["ODN MQTT"]}
                 />
               </div>
             )}
