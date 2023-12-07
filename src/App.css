@@ -15,21 +15,16 @@
 
 .logout {
   cursor: pointer;
-  border-radius: 50%;
-  border: 0;
-  width: 70px;
-  height: 70px;
-  position: absolute;
-  bottom: 2%;
-  right: 2%;
-  transition: 0.5s;
-  font-size: 15px;
+  font-size: larger;
   font-weight: bolder;
+  margin-left: 10px;
+  transition: 0.5s;
 }
 
 .logout:hover {
-  box-shadow: inset 0px 1px 5px 2px #000;
-  transition: 0.5s;
+  color: black;
+  background-color: white;
+  transition: 0.3s;
 }
 
 .json-section {
@@ -42,4 +37,5 @@
 
 .title {
   font-size: larger;
+  font-weight: bolder;
 }

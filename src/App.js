@@ -8,6 +8,7 @@ import "./App.css";
 import awsconfig from "./aws-exports";
 import JsonView from "./components/JsonView";
 import AWSIotConfiguration from "./config/aws-iot-config";
+import { CURRENT_TIME } from "./utils/timestamp";
 
 Amplify.configure(awsconfig);
 
@@ -26,6 +27,7 @@ function App() {
       })
       .subscribe({
         next: (data) => {
+          data.timestamp = CURRENT_TIME();
           setDataArray((prevState) => [...prevState, data]);
           window.scrollTo(0, document.body.scrollHeight);
         },
@@ -68,11 +70,12 @@ function App() {
       <Authenticator>
         {({ signOut, user }) => (
           <div className="App-header">
-            <code className="title">MQTT Checker</code>
-
-            <button className="logout" onClick={signOut}>
-              Logout
-            </button>
+            <div>
+              <code className="title">MQTT Checker</code>
+              <code className="logout" onClick={signOut}>
+                Logout
+              </code>
+            </div>
 
             <div className="json-section">
               <JsonView data={user} keyPath="Authenticator.user Info" />
