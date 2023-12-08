@@ -2,13 +2,12 @@ import { PubSub } from "@aws-amplify/pubsub";
 import { Authenticator, withAuthenticator } from "@aws-amplify/ui-react";
 import "@aws-amplify/ui-react/styles.css";
 import { Amplify } from "aws-amplify";
-import { fetchAuthSession } from "aws-amplify/auth";
-import { useEffect, useState } from "react";
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import "./App.css";
 import awsconfig from "./aws-exports";
-import JsonView from "./components/JsonView";
+import Chart from "./components/Chart";
+import Main from "./components/Main";
 import AWSIotConfiguration from "./config/aws-iot-config";
-import { CURRENT_TIME } from "./utils/timestamp";
 
 Amplify.configure(awsconfig);
 
@@ -17,73 +16,22 @@ const pubsub = new PubSub({
   endpoint: AWSIotConfiguration.endpoint,
 });
 
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Main pubsub={pubsub} />,
+  },
+  {
+    path: "/chart/:sensor",
+    element: <Chart pubsub={pubsub} />,
+  },
+]);
+
 function App() {
-  const [dataArray, setDataArray] = useState([]);
-
-  useEffect(() => {
-    pubsub
-      .subscribe({
-        topics: ["odn/+/sensors/#", "odn/+/photovoltaics/#", "odn/+/sensors"],
-      })
-      .subscribe({
-        next: (data) => {
-          data.timestamp = CURRENT_TIME();
-          setDataArray((prevState) => [...prevState, data]);
-          window.scrollTo(0, document.body.scrollHeight);
-        },
-        complete: () => {},
-        error: (error) => {
-          console.log(error);
-        },
-      });
-
-    return console.log("Subscribe Complete");
-  }, []);
-
-  useEffect(() => {
-    fetchAuthSession()
-      .then((info) => {
-        const cognitoIdentityId = info.identityId;
-        // attachPolicy(cognitoIdentityId);
-
-        console.log(
-          "Install aws-cli first and use script\n\n" +
-            `aws iot attach-policy --policy-name 'clientMqttConnect' --target '${cognitoIdentityId}'`
-        );
-      })
-      .catch((err) => {
-        if (err) {
-          console.log(err);
-          console.log("Logout");
-        }
-      });
-  }, []);
-
-  // const uniqueArray = [
-  //   ...new Map(dataArray.map((data) => [data, data])).values(),
-  // ];
-
   return (
-    <div className="App">
-      <Authenticator>
-        {({ signOut, user }) => (
-          <div className="App-header">
-            <div>
-              <code className="title">MQTT Checker</code>
-              <code className="logout" onClick={signOut}>
-                Logout
-              </code>
-            </div>
-
-            <div className="json-section">
-              <JsonView data={user} keyPath="Authenticator.user Info" />
-              <JsonView data={pubsub} keyPath="PubSub Info" />
-              <JsonView data={dataArray} keyPath="ODN MQTT" />
-            </div>
-          </div>
-        )}
-      </Authenticator>
-    </div>
+    <Authenticator>
+      <RouterProvider router={router} />
+    </Authenticator>
   );
 }
 

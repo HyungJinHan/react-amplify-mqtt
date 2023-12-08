@@ -20,12 +20,23 @@
   font-weight: bolder;
   margin-left: 10px;
   transition: 0.5s;
+
+  > a {
+    text-decoration: none;
+    transition: 0.5s;
+    color: white;
+  }
 }
 
 .logout:hover {
   color: black;
   background-color: white;
   transition: 0.3s;
+
+  > a {
+    color: black;
+    transition: 0.3s;
+  }
 }
 
 .json-section {
