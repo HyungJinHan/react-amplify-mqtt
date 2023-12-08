@@ -41,8 +41,6 @@ export default function Chart({ pubsub }) {
     return console.log("Subscribe Complete");
   }, [device.value, location.pathname, location.state.topics, pubsub]);
 
-  console.log(dataArray);
-
   return (
     <div>
       <div
