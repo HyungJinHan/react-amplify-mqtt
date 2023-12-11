@@ -51,20 +51,24 @@
 
 2. `AWS Amplify` 접속 후, 위에서 생성한 `Git`과 연동된 프로젝트를 연결
 
-3. `amplify add auth`
+3. `amplify init`
+
+4. `amplify add auth`
 
    - `AWS Cognito`를 통해 회원가입/로그인 구현 진행
 
      - `bash`를 통해 선택하여 진행 (간단한 선택을 통해 자동으로 설정)
 
-4. [AWS Amplify + AWS Cognito 연동 DOCS]('https://docs.aws.amazon.com/ko_kr/prescriptive-guidance/latest/patterns/create-a-react-app-by-using-aws-amplify-and-add-authentication-with-amazon-cognito.html)
+5. `amplify push`
 
-5. [AWS Amplify + AWS IoT 연동 DOCS]('https://docs.amplify.aws/javascript/build-a-backend/more-features/pubsub/set-up-pubsub/)
+   - [AWS Amplify + AWS Cognito 연동 DOCS](https://docs.aws.amazon.com/ko_kr/prescriptive-guidance/latest/patterns/create-a-react-app-by-using-aws-amplify-and-add-authentication-with-amazon-cognito.html)
+
+6. [AWS Amplify + AWS IoT 연동 DOCS](https://docs.amplify.aws/javascript/build-a-backend/more-features/pubsub/set-up-pubsub/)
 
    - ⚠️ 2~3단계가 꼭 진행되어야 함
 
      - 2단계의 `aws-cli` 입력 단계의 경우 해당 프로젝트의 `console.log`를 통해 스크립트 복사 후 진행 가능
 
-6. `react-json-tree` 라이브러리 사용을 통해 데이터 확인
+7. `react-json-tree` 라이브러리 사용을 통해 데이터 확인
 
-   - [`react-json-tree` 라이브러리 GitHub]('https://github.com/reduxjs/redux-devtools/tree/main/packages/react-json-tree')
+   - [`react-json-tree` 라이브러리 GitHub](https://github.com/reduxjs/redux-devtools/tree/main/packages/react-json-tree)
